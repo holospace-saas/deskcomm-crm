@@ -3,6 +3,7 @@ import { marcaEhADoProduto } from "@/lib/branding";
 import { marcaDaSaida } from "@/lib/branding/saida";
 import { createClient } from "@/lib/supabase/server";
 import { IdiomaProvider } from "@/lib/i18n/IdiomaProvider";
+import { idiomaDoVisitante } from "@/lib/i18n/idiomaAnonimo";
 
 /**
  * A casca das telas de acesso — login, cadastro, recuperação, MFA, confirmar acesso.
@@ -52,7 +53,13 @@ export default async function PublicLayout({ children }: { children: React.React
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const locale = (user?.user_metadata?.locale as string | undefined) ?? null;
+  const localeBruto = (user?.user_metadata?.locale as string | undefined) ?? null;
+  // `idiomaDoVisitante` existe para exatamente este caso (ver seu cabeçalho) —
+  // sem sessão, usa o Accept-Language do navegador antes de cair no padrão
+  // pt-BR, em vez do `normalizarIdioma` direto que ignorava esse sinal e
+  // mostrava português a qualquer visitante sem conta, não importa o idioma
+  // dele (login, recuperar senha, MFA).
+  const locale = await idiomaDoVisitante(localeBruto);
 
   return (
     <IdiomaProvider locale={locale}>
