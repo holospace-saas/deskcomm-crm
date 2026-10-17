@@ -174,25 +174,25 @@ function pct(fraction: number): string {
 function diagnosisBody(reason: HoldReason, rates: SessionRates, k: HealthKnobs): string {
   if (reason === 'go_live') {
     return (
-      'Número novo aguardando liberação (go-live). Os disparos que o sistema começa — follow-up ' +
-      'e cadência de prospecção — nascem em espera por segurança: a fila retém, nada é perdido. ' +
-      'RESPONDER quem te escreveu continua funcionando normalmente. Resolva este item quando o ' +
-      'número estiver pronto para disparar.'
+      'Número nuevo esperando habilitación (go-live). Los envíos que arranca el sistema — follow-up ' +
+      'y cadencia de prospección — nacen en espera por seguridad: la cola los retiene, no se pierde nada. ' +
+      'RESPONDER a quien te escribió sigue funcionando con normalidad. Resolvé este ítem cuando el ' +
+      'número esté listo para enviar.'
     );
   }
   if (reason === 'block_rate') {
     const rate = rates.totalSends > 0 ? rates.blockedSends / rates.totalSends : 0;
     return (
-      `Bloqueios em ${pct(rate)} dos ${rates.totalSends} últimos envios do número ` +
-      `(limiar ${pct(k.blockRateThreshold)}). Outbound em espera automática — a fila retém, nada é perdido. ` +
-      'Verifique o número (possível queima do WhatsApp) e resolva este item para retomar.'
+      `Bloqueos en ${pct(rate)} de los últimos ${rates.totalSends} envíos del número ` +
+      `(umbral ${pct(k.blockRateThreshold)}). Envíos en espera automática — la cola los retiene, no se pierde nada. ` +
+      'Revisá el número (posible quema de WhatsApp) y resolvé este ítem para retomar.'
     );
   }
   const rate = rates.sentLeads > 0 ? rates.respondedLeads / rates.sentLeads : 0;
   return (
-    `Taxa de resposta em ${pct(rate)} (${rates.respondedLeads} de ${rates.sentLeads} leads contatados ` +
-    `responderam; piso ${pct(k.responseRateFloor)}). Outbound em espera automática — a fila retém. ` +
-    'Verifique a abordagem/o número e resolva este item para retomar.'
+    `Tasa de respuesta en ${pct(rate)} (${rates.respondedLeads} de ${rates.sentLeads} leads contactados ` +
+    `respondieron; piso ${pct(k.responseRateFloor)}). Envíos en espera automática — la cola los retiene. ` +
+    'Revisá el enfoque/el número y resolvé este ítem para retomar.'
   );
 }
 
@@ -291,8 +291,8 @@ async function evaluateSession(
           tenantId,
           reason === 'go_live' ? 'info' : 'warn',
           reason === 'go_live'
-            ? 'Número novo aguardando liberação (go-live)'
-            : 'Saúde do número degradada — outbound em espera automática',
+            ? 'Número nuevo esperando habilitación (go-live)'
+            : 'Salud del número degradada — envíos en espera automática',
           diagnosisBody(reason, rates, k),
           HEALTH_HOLD_REF_KIND,
           channelSessionId,
