@@ -200,7 +200,7 @@ export async function listarConexoesCaidas(
     .filter((s) => !ehNomeDeSessaoE2E(s.waha_session_name as string | null))
     .map((s) => ({
     id: s.id as string,
-    apelido: (s.display_name as string | null) ?? (s.phone_number as string | null) ?? "sem nome",
+    apelido: (s.display_name as string | null) ?? (s.phone_number as string | null) ?? "sin nombre",
     status: (s.status as string | null) ?? "",
   }));
 }
