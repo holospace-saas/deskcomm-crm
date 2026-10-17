@@ -54,11 +54,6 @@ export default async function PublicLayout({ children }: { children: React.React
     data: { user },
   } = await supabase.auth.getUser();
   const localeBruto = (user?.user_metadata?.locale as string | undefined) ?? null;
-  // `idiomaDoVisitante` existe para exatamente este caso (ver seu cabeçalho) —
-  // sem sessão, usa o Accept-Language do navegador antes de cair no padrão
-  // pt-BR, em vez do `normalizarIdioma` direto que ignorava esse sinal e
-  // mostrava português a qualquer visitante sem conta, não importa o idioma
-  // dele (login, recuperar senha, MFA).
   const locale = await idiomaDoVisitante(localeBruto);
 
   return (
