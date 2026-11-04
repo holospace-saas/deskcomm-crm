@@ -25,16 +25,16 @@ test("criar conta: signup → e-mail de confirmação → onboarding → re-logi
 
   // 1. Login → botão "Criar conta"
   await page.goto("/login");
-  await page.getByRole("link", { name: "Criar conta" }).click();
+  await page.getByRole("link", { name: "Crear cuenta" }).click();
   await expect(page).toHaveURL(/\/signup$/);
 
   // 2. Formulário de signup
-  await page.getByLabel("Nome da empresa").fill("Loja E2E Signup");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Senha", { exact: true }).fill(password);
-  await page.getByLabel("Confirmar senha").fill(password);
-  await page.getByRole("button", { name: "Criar conta" }).click();
-  await expect(page.getByText("Confirme seu e-mail")).toBeVisible();
+  await page.getByLabel("Nombre de la empresa").fill("Loja E2E Signup");
+  await page.getByLabel("Correo").fill(email);
+  await page.getByLabel("Contraseña", { exact: true }).fill(password);
+  await page.getByLabel("Confirmar contraseña").fill(password);
+  await page.getByRole("button", { name: "Crear cuenta" }).click();
+  await expect(page.getByText("Confirma tu correo")).toBeVisible();
 
   // 3. Abre o e-mail real no Mailpit e segue o link
   const html = await waitForEmail(email, "Confirme seu e-mail");
@@ -49,8 +49,8 @@ test("criar conta: signup → e-mail de confirmação → onboarding → re-logi
   // 5. Sai (limpa sessão) e entra de novo com as credenciais criadas
   await context.clearCookies();
   await page.goto("/login");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Senha").fill(password);
+  await page.getByLabel("Correo").fill(email);
+  await page.getByLabel("Contraseña").fill(password);
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
   await page.waitForURL(/\/(app|onboarding)\//, { timeout: 30_000 });
   await expect(page).not.toHaveURL(/\/login/);

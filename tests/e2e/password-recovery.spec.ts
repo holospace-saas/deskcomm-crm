@@ -71,11 +71,11 @@ test("recuperar senha: forgot → e-mail → nova senha → login com a nova", a
 
   // 2. Login → link "Esqueci minha senha"
   await page.goto("/login");
-  await page.getByRole("link", { name: "Esqueci minha senha" }).click();
+  await page.getByRole("link", { name: /esqueci minha senha|olvid[ée] mi contrase/i }).click();
   await expect(page).toHaveURL(/\/login\/forgot$/);
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Enviar link de redefinição" }).click();
-  await expect(page.getByText("Verifique seu e-mail")).toBeVisible();
+  await page.getByLabel("Correo").fill(email);
+  await page.getByRole("button", { name: "Enviar enlace de restablecimiento" }).click();
+  await expect(page.getByText("Revisa tu correo")).toBeVisible();
 
   // 3. Abre o e-mail real e segue o link de recovery
   const html = await waitForEmail(email, "Redefinir senha");
@@ -84,20 +84,20 @@ test("recuperar senha: forgot → e-mail → nova senha → login com a nova", a
   await expect(page).toHaveURL(/\/login\/reset/);
 
   // 4. Define a senha nova
-  await page.getByLabel("Nova senha", { exact: true }).fill(newPassword);
-  await page.getByLabel("Confirmar nova senha").fill(newPassword);
-  await page.getByRole("button", { name: "Definir nova senha" }).click();
+  await page.getByLabel("Nueva contraseña", { exact: true }).fill(newPassword);
+  await page.getByLabel("Confirmar nueva contraseña").fill(newPassword);
+  await page.getByRole("button", { name: "Definir nueva contraseña" }).click();
   await expect(page).toHaveURL(/\/login\?reset=success/);
-  await expect(page.getByText("Senha redefinida com sucesso")).toBeVisible();
+  await expect(page.getByText("Contraseña restablecida con éxito")).toBeVisible();
 
   // 5a. Senha ANTIGA tem que falhar
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Senha").fill(oldPassword);
+  await page.getByLabel("Correo").fill(email);
+  await page.getByLabel("Contraseña").fill(oldPassword);
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
-  await expect(page.getByText("Email ou senha incorretos.")).toBeVisible();
+  await expect(page.getByText("Correo o contraseña incorrectos.")).toBeVisible();
 
   // 5b. Senha NOVA entra
-  await page.getByLabel("Senha").fill(newPassword);
+  await page.getByLabel("Contraseña").fill(newPassword);
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
   await page.waitForURL(/\/(app|onboarding)\//, { timeout: 30_000 });
   await expect(page).not.toHaveURL(/\/login/);

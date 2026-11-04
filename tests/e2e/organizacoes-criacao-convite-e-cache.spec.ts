@@ -14,8 +14,8 @@ async function insert(table: string, value: Record<string, unknown>) {
 }
 async function login(page: Page, email: string) {
   await page.goto("/login");
-  await page.getByLabel(/e-?mail/i).fill(email);
-  await page.getByLabel(/senha/i).fill(password);
+  await page.getByLabel(/e-?mail|correo/i).fill(email);
+  await page.getByLabel(/senha|contraseña/i).fill(password);
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
   await page.waitForURL(/\/app(\/|$)/, { timeout: 60_000 });
 }
@@ -185,7 +185,7 @@ test("org única oferece criação, responsável aceita e A→B→A não mistura
     // Usuário comum não ganha porta de administração de plataforma.
     await expect(guest.getByTestId("tenant-switcher")).toHaveCount(0);
     await guest.goto(new URL(link).pathname);
-    await guest.getByRole("button", { name: "Aceitar convite", exact: true }).click();
+    await guest.getByRole("button", { name: "Aceptar invitación", exact: true }).click();
     await expect(guest.getByTestId("tenant-switcher")).toContainText(`Empresa B ${suffix}`);
     await expect(guest.locator("[data-conversation-id]").getByText(`Cliente B ${suffix}`, { exact: true })).toBeVisible();
     const membership = await db.from("user_organizations").select("invited_by,role").eq("organization_id", orgB).eq("user_id", users[1]).single();
